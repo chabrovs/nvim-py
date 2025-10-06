@@ -22,6 +22,11 @@ return {
 			vim.lsp.enable("pyright")
 			vim.lsp.enable("lua_ls")
 
+			-- LSP for autocompletion
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            vim.lsp.config("pyright", { capabilities = capabilities })
+            vim.lsp.config("lua_ls", { capabilities = capabilities })
+
 			-- Global mappings for LSP
 			vim.keymap.set("n", "<leader>m", vim.lsp.buf.hover, { desc = "more details" })
 			vim.keymap.set("n", "<leader>df", vim.lsp.buf.definition, { desc = "go to definition" })

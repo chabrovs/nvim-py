@@ -7,16 +7,22 @@ return {
             {'hrsh7th/cmp-buffer'},
             {'hrsh7th/cmp-path'},
             {'hrsh7th/cmp-nvim-lsp'},
+            {'rafamadriz/friendly-snippets'},
         },
         config = function()
             local cmp = require("cmp")
             local luasnip = require("luasnip")
+            require("luasnip.loaders.from_vscode").lazy_load()
 
             cmp.setup({
                 snippet = {
                     expand = function(args)
                         luasnip.lsp_expand(args.body)
                     end,
+                },
+                window = {
+                    -- completion = cmp.config.window.bordered(),
+                    documentation = cmp.config.window.bordered(),
                 },
                 mapping = cmp.mapping.preset.insert({
                     ['<Tab>'] = cmp.mapping(function(fallback)
