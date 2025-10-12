@@ -21,21 +21,40 @@ local function get_debugger()
 	--[[
         This function return a full path to the debugger python binary.
         Usually located at "~/.config/nvim/.virtualenvs/debugpy/bin/python."
-        Use this function instead of hardcoding the full path.
+        Alternatively, install 'debugpy' using a Python package manager to an
+        active virtual environment.
+
+        Details:
+        If a default debugger is not found, use "debugpy" from the currently
+        active Python environment.
     --]]
 	local home_dir = os.getenv("HOME")
-
+	local debugger_relative_path = ".config/nvim/.virtualenvs/debugpy/bin/python"
+	local fullPathDebugger
+	local function isExecutable(binary)
+		local file = io.open(binary, "r")
+		if file ~= nil then
+			io.close(file)
+			return true
+		else
+			return false
+		end
+	end
 	if not home_dir then
 		print("[ERROR](debigger): Couldn't get home directory.")
 		return nil
 	end
 
-	local debugger_relative_path = ".config/nvim/.virtualenvs/debugpy/bin/python"
-
 	if home_dir:sub(-1) == "/" then
-		return home_dir .. debugger_relative_path
+		fullPathDebugger = home_dir .. debugger_relative_path
 	else
-		return home_dir .. "/" .. debugger_relative_path
+		fullPathDebugger = home_dir .. "/" .. debugger_relative_path
+	end
+
+	if isExecutable(fullPathDebugger) == true then
+		return fullPathDebugger
+	else
+		return pythonPath()
 	end
 end
 
@@ -68,6 +87,7 @@ return {
 				cb({
 					type = "executable",
 					command = get_debugger(),
+					-- command = pythonPath(),
 					args = { "-m", "debugpy.adapter" },
 					options = {
 						source_filetype = "python",
