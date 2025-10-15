@@ -43,3 +43,5 @@ spell/
 .luarc.json
 
 .virtualenvs
+
+lazy-lock.json
